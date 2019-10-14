@@ -16,7 +16,7 @@ This project is heavily inspired by Chris McCormick's public tutorial: https://m
 
 #### Preparation
 
-```{python}
+```python
 from transformers_wrapers.classification_models import AvailableClassificationModels, TransformerModelForClassification
 
 model = TransformerModelForClassification(
@@ -49,19 +49,19 @@ validation_dataloader = model.prepare_data(sentences_val, labels_val, max_len=12
 
 #### Finetuning
 
-```{python}
+```python
 training_loss = model.finetune(training_dataloader, validation_dataloader, optimizer, epochs=6)
 ```
 
 #### Evaluation
 
-```{python}
+```python
 test_dataloader = model.prepare_data(sentences_test, labels=labels_test, max_len=128, batch_size=32)
 true_labels, pred_labels = model.evaluate(test_dataloader, code_book)
 ```
 
 #### Prediction
 
-```{python}
+```python
 true_labels, pred_labels = model.evaluate(pred_dataloader)
 ```
