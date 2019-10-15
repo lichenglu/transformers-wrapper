@@ -8,7 +8,7 @@ This project is heavily inspired by Chris McCormick's public tutorial: https://m
 
 ## Installation
 
-`pip install transformers_wrapers`
+`pip install -i https://test.pypi.org/simple/ --no-deps transformers-wrapper`
 
 ## Example
 
@@ -17,7 +17,7 @@ This project is heavily inspired by Chris McCormick's public tutorial: https://m
 #### Preparation
 
 ```python
-from transformers_wrapers.classification_models import AvailableClassificationModels, TransformerModelForClassification
+from transformers_wrapper.classification_models import AvailableClassificationModels, TransformerModelForClassification
 
 model = TransformerModelForClassification(
     model_name=AvailableClassificationModels.BERT_BASE_UNCASED,

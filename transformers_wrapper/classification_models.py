@@ -1,4 +1,6 @@
 import torch
+import numpy as np
+import pandas as pd
 from sklearn.metrics import classification_report
 from sklearn.metrics import matthews_corrcoef
 from keras.preprocessing.sequence import pad_sequences
@@ -21,7 +23,7 @@ class AvailableClassificationModels(enum.Enum):
     ROBERTA_LARGE_MNLI = 'roberta-large-mnli'
 
 
-def __config_tokenizer(model_name: AvailableClassificationModels, do_lower_case: bool = True):
+def _config_tokenizer(model_name: AvailableClassificationModels, do_lower_case: bool = True):
     model_name = str(model_name.value)
     tokenizer = None
     if 'bert' in model_name:
@@ -37,7 +39,7 @@ def __config_tokenizer(model_name: AvailableClassificationModels, do_lower_case:
     return tokenizer
 
 
-def __config_model(model_name: AvailableClassificationModels, num_labels: int, use_gpu: bool):
+def _config_model(model_name: AvailableClassificationModels, num_labels: int, use_gpu: bool):
     model_name = str(model_name.value)
     model = None
     if 'bert' in model_name:
@@ -77,8 +79,8 @@ class TransformerModelForClassification(object):
         self.device_name = torch.cuda.get_device_name(0)
 
         self.model_name = model_name
-        self.tokenizer = __config_tokenizer(self.model_name, do_lower_case)
-        self.model = __config_model(
+        self.tokenizer = _config_tokenizer(self.model_name, do_lower_case)
+        self.model = _config_model(
             self.model_name, num_labels, use_gpu=self.n_gpu > 0)
 
     def tokenize(self, sentences: [str], max_len: int):
@@ -159,7 +161,7 @@ class TransformerModelForClassification(object):
         inputs, masks = self.tokenize(sentences, max_len)
         return self.transform(inputs, labels, masks, batch_size)
 
-    def __train(self, train_dataloader, optimizer):
+    def _train(self, train_dataloader, optimizer):
 
         # Tracking variables
         train_loss_set = []
@@ -206,7 +208,7 @@ class TransformerModelForClassification(object):
         tqdm.write("\nTrain loss: {}".format(tr_loss/nb_tr_steps))
         return train_loss_set
 
-    def __validate(self, dataloader):
+    def _validate(self, dataloader):
             # Put model in evaluation mode to evaluate loss on the validation set
         self.model.eval()
 
@@ -260,11 +262,11 @@ class TransformerModelForClassification(object):
         for _ in trange(epochs, desc="Epoch"):
 
             # Train
-            _train_loss_set = self.__train(train_dataloader, optimizer)
+            _train_loss_set = self._train(train_dataloader, optimizer)
             train_loss_set = [*train_loss_set, *_train_loss_set]
 
             # Validation
-            self.__validate(validation_dataloader)
+            self._validate(validation_dataloader)
 
         return _train_loss_set
 
